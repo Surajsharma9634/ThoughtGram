@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THOUGHTGRAM - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* General Styles */
+        body {
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+            color: #333;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1s ease-in;
+        }
+
+        h1 {
+            font-size: 40px;
+            color: #ff6b6b;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            margin-right: 20px;
+            border: 3px solid #ff6b6b;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h2 {
+            font-size: 28px;
+            color: #ff6b6b;
+        }
+
+        .post-form {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .post-form textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            color: #333;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            resize: none;
+        }
+
+        .post-form button {
+            background: #ff6b6b;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background 0.3s;
+        }
+
+        .post-form button:hover {
+            background: #ff4f4f;
+        }
+
+        .posts {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .post {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .post:hover {
+            transform: scale(1.02);
+        }
+
+        .post .content {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .post .meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .post .like-btn {
+            background: none;
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .post .like-btn:hover {
+            background: #ff6b6b;
+            color: #fff;
+        }
+
+        /* Comment Styles */
+        .comment-section {
+            margin-top: 20px;
+        }
+
+        .comment-section textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            color: #333;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            resize: none;
+        }
+
+        .comment-section button {
+            background: #ff6b6b;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .comment {
+            margin-top: 10px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .likes {
+            color: #333;
+            font-size: 16px;
+        }
+
+        /* Footer Styles */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #333;
+        }
+
+        .footer img {
+            width: 80px;  /* Increased size */
+            height: 80px; /* Increased size */
+            border-radius: 50%;
+            margin: 10px 0;
+            border: 2px solid #ff6b6b;
+        }
+
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{{ url_for('static', filename='uploads/' + users[username]['profile_photo']) }}" alt="Profile Photo">
+            <h2>{{ users[username]['fullname'] }}</h2>
+        </div>
+        <h1>Welcome to THOUGHTGRAM!</h1>
+
+        <!-- Post Form -->
+        <div class="post-form">
+            <form method="POST" action="{{ url_for('create_post') }}">
+                <input type="hidden" name="username" value="{{ username }}">
+                <textarea name="content" rows="4" placeholder="What's on your mind?" required></textarea>
+                <button type="submit">Post</button>
+            </form>
+        </div>
+
+        <!-- Posts Section -->
+        <div class="posts">
+            {% for post in posts %}
+            <div class="post">
+                <div class="content">{{ post['content'] }}</div>
+                <div class="meta">
+                    <div class="likes">❤️ {{ post['likes'] }} likes</div>
+                    <button class="btn btn-outline-primary btn-sm like-btn" onclick="likePost('{{ post.id }}')">Like</button>
+                </div>
+
+                <!-- Comment Section -->
+                <div class="comment-section">
+                    <textarea rows="2" placeholder="Add a comment..." id="comment-{{ post['id'] }}"></textarea>
+                    <button class="btn btn-outline-primary btn-sm" onclick="addComment('{{ post.id }}')">Comment</button>
+                    <div id="comments-{{ post['id'] }}">
+                        {% for comment in post['comments'] %}
+                        <div class="comment">{{ comment }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <img src="{{ url_for('static', filename='uploads/' + users[username]['profile_photo']) }}" alt="Your Photo">
+            <p>Made with ♥ in India</p>
+            <p>India's first ever open source social media app</p>
+        </div>
+
+        <style>
+            /* Footer Styles */
+            .footer {
+                margin-top: 40px;
+                text-align: center;
+                color: #333;
+            }
+
+            .footer img {
+                width: 80px;  /* Increased size */
+                height: 80px; /* Increased size */
+                border-radius: 50%;
+                margin: 10px 0;
+                border: 2px solid #ff6b6b;
+            }
+        </style>
+
+
+    <script>
+        function likePost(postId) {
+            fetch(`/like/${postId}`, {
+                method: 'POST'
+            }).then(response => window.location.reload());
+        }
+
+        function addComment(postId) {
+            const commentText = document.getElementById(`comment-${postId}`).value;
+            if (!commentText) return;
+
+            fetch(`/comment/${postId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ comment: commentText })
+            }).then(response => {
+                document.getElementById(`comment-${postId}`).value = ''; // Clear comment input
+                return response.json();
+            }).then(data => {
+                const commentsDiv = document.getElementById(`comments-${postId}`);
+                const newComment = document.createElement('div');
+                newComment.className = 'comment';
+                newComment.innerText = data.comment; // Assuming the response contains the new comment
+                commentsDiv.appendChild(newComment);
+            });
+        }
+    </script>
+</body>
+</html>
